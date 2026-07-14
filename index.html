@@ -184,15 +184,38 @@
 			font-size: 0.95rem;
 		}
 
-		.pub-item { margin-bottom: 1.1rem; }
-		.pub-item:last-child { margin-bottom: 0; }
+		.pub-item,
+		.entry {
+			position: relative;
+			margin: 0;
+			padding: 0 0 1.2rem 1.15rem;
+			border-left: 1px solid var(--border-soft);
+		}
+
+		.pub-item:last-child,
+		.entry:last-child {
+			padding-bottom: 0;
+			border-left-color: transparent;
+		}
+
+		.pub-item::before,
+		.entry::before {
+			content: "";
+			position: absolute;
+			left: -4px;
+			top: 0.35em;
+			width: 7px;
+			height: 7px;
+			border-radius: 50%;
+			background: var(--accent-blue);
+			box-shadow: 0 0 0 2px var(--window-bg);
+		}
+
 		.pub-title { color: var(--fg); margin: 0 0 0.2rem; }
 		.pub-meta { color: var(--accent-green); margin: 0 0 0.2rem; font-size: 0.88rem; }
 		.pub-item a { color: var(--accent-blue); font-size: 0.88rem; text-decoration: none; }
 		.pub-item a:hover { color: var(--accent-green); text-decoration: underline; }
 
-		.entry { margin-bottom: 1.3rem; }
-		.entry:last-child { margin-bottom: 0; }
 		.entry-header { display: flex; flex-wrap: wrap; justify-content: space-between; column-gap: 1rem; }
 		.entry-org { color: var(--accent-green); }
 		.entry-role { color: var(--fg); }
@@ -243,7 +266,7 @@
 					<div class="collapse" id="about-panel">
 						<div class="cmd-output">
 							<p class="about-text">I work at the intersection of data science, econometrics, and impact evaluation, building the pipelines, models, and infrastructure that turn messy real-world data into rigorous evidence for governments, researchers, and institutions.</p>
-							<p class="about-text">Over 12+ years I've applied this across the World Bank, oTree, and Busara, working on development, governance, and public policy, particularly across the Global South.</p>
+							<p class="about-text">Over 15+ years I've applied this across the World Bank, oTree, and Busara, working on development, governance, and public policy, particularly across the Global South.</p>
 							<p class="about-text">Based in Nairobi, Kenya. Avid golfer. Let’s connect!</p>
 						</div>
 					</div>
