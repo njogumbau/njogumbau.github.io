@@ -215,6 +215,11 @@
 		.pub-meta { color: var(--accent-green); margin: 0 0 0.2rem; font-size: 0.88rem; }
 		.pub-item a { color: var(--accent-blue); font-size: 0.88rem; text-decoration: none; }
 		.pub-item a:hover { color: var(--accent-green); text-decoration: underline; }
+		.pub-status { display: inline-block; margin-left: 0.5rem; padding: 0.03rem 0.45rem; font-size: 0.76rem; border-radius: 3px; border: 1px solid currentColor; vertical-align: 1px; }
+		.pub-status.accepted { color: var(--accent-green); }
+		.pub-status.submitted { color: var(--dot-amber); }
+		.pub-status.review { color: var(--accent-blue); }
+		.pub-status.revise { color: var(--dot-red); }
 
 		.entry-header { display: flex; flex-wrap: wrap; justify-content: space-between; column-gap: 1rem; }
 		.entry-org { color: var(--accent-green); }
@@ -379,28 +384,33 @@
 						<div class="cmd-output">
 
 							<div class="pub-item">
+								<p class="pub-title">Kantian Morality in Non-Human Primates: Structural Estimation from Ultimatum and Social Dilemma Games</p>
+								<p class="pub-meta">N. Mbau, L. Sun, F. De Petrillo, W. Lu, D.L. Chen <span class="pub-status submitted">Submitted</span></p>
+							</div>
+
+							<div class="pub-item">
 								<p class="pub-title">What Precedent Reveals About Group Agency: Evidence from Discursive Dilemmas on the US Supreme Court</p>
-								<p class="pub-meta">B. Flanagan, N. Mbau, D. Chen, K. Silver · Available at SSRN 5544159 · 2026</p>
+								<p class="pub-meta">B. Flanagan, N. Mbau, D. Chen, K. Silver · Available at SSRN 5544159 · 2026 <span class="pub-status accepted">Accepted</span></p>
 							</div>
 
 							<div class="pub-item">
 								<p class="pub-title">oTree-QVSR: An Open-Source Application for Quadratic Voting Survey Research</p>
-								<p class="pub-meta">N. Mbau, D.L. Chen · 2025</p>
+								<p class="pub-meta">N. Mbau, D.L. Chen · 2025 <span class="pub-status review">Under Review</span></p>
 							</div>
 
 							<div class="pub-item">
 								<p class="pub-title">Optimizing Judicial Efficiency: A Sharing Economy Approach to Reducing Court Backlogs</p>
-								<p class="pub-meta">D.L. Chen, Y.H. He, N. Mbau · 2025</p>
+								<p class="pub-meta">D.L. Chen, Y.H. He, N. Mbau · 2025 <span class="pub-status revise">Revise & Resubmit</span></p>
 							</div>
 
 							<div class="pub-item">
 								<p class="pub-title">Factors Influencing Customer Satisfaction with Online Food Delivery Platforms in Nairobi County</p>
-								<p class="pub-meta">B.N. Mbau · Strathmore University · 2025</p>
+								<p class="pub-meta">B.N. Mbau · Strathmore University · 2025 <span class="pub-status accepted">Accepted</span></p>
 							</div>
 
 							<div class="pub-item">
 								<p class="pub-title">Smart Smartphones for Mental Health</p>
-								<p class="pub-meta">A.R. Ani, A. Alvi, S. Saheel, T. Ahmed, D.L. Chen, Z. Wahhaj, N. Mbau · 2025</p>
+								<p class="pub-meta">A.R. Ani, A. Alvi, S. Saheel, T. Ahmed, D.L. Chen, Z. Wahhaj, N. Mbau · 2025 <span class="pub-status review">Under Review</span></p>
 							</div>
 
 						</div>
