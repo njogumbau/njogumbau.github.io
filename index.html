@@ -14,90 +14,387 @@
 	<!-- Bootstrap Icons -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 	<style>
+		:root {
+			--bg: #17171f;
+			--window-bg: #1e1e2e;
+			--titlebar-bg: #24243a;
+			--fg: #c9cdd6;
+			--fg-secondary: #a9aec0;
+			--muted: #75798a;
+			--accent-blue: #7c9cb8;
+			--accent-green: #8ba178;
+			--border: #303142;
+			--border-soft: #3a3c52;
+			--dot-red: #a17c7c;
+			--dot-amber: #a89b74;
+			--dot-green: #8ba178;
+		}
+
+		* { box-sizing: border-box; }
+
 		body {
 			margin: 0;
-			padding: 0;
+			padding: 4rem 1rem 3rem;
 			font-family: 'Courier New', Courier, monospace;
-			background-color: #1e1e2e;
-			color: #f8f8f2;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
+			background-color: var(--bg);
+			background-image:
+				radial-gradient(ellipse at top, rgba(124, 156, 184, 0.06), transparent 60%);
+			color: var(--fg);
 			min-height: 100vh;
-			padding-top: 25vh;
+			position: relative;
+		}
+
+		body::before {
+			content: "";
+			position: fixed;
+			inset: 0;
+			pointer-events: none;
+			background-image: repeating-linear-gradient(
+				to bottom,
+				rgba(255, 255, 255, 0.02),
+				rgba(255, 255, 255, 0.02) 1px,
+				transparent 1px,
+				transparent 3px
+			);
+			opacity: 0.5;
+		}
+
+		.window {
+			max-width: 860px;
+			margin: 0 auto;
+			border-radius: 10px;
+			overflow: hidden;
+			background: var(--window-bg);
+			box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border);
+		}
+
+		.titlebar {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			padding: 0.75rem 1rem;
+			background: var(--titlebar-bg);
+			border-bottom: 1px solid var(--border);
+		}
+
+		.dot {
+			width: 11px;
+			height: 11px;
+			border-radius: 50%;
+		}
+
+		.dot.red { background: var(--dot-red); }
+		.dot.amber { background: var(--dot-amber); }
+		.dot.green { background: var(--dot-green); }
+
+		.titlebar-label {
+			margin-left: 0.75rem;
+			color: var(--muted);
+			font-size: 0.82rem;
+		}
+
+		.window-body {
+			padding: 2.5rem 2.25rem 1.5rem;
+		}
+
+		.shell-line {
+			color: var(--muted);
+			font-size: 0.92rem;
+			margin-bottom: 0.5rem;
+		}
+
+		.shell-line .shell-prompt {
+			color: var(--accent-green);
+			margin-right: 0.5rem;
 		}
 
 		h1 {
-			color: #66d9ef;
-			font-size: 2.7rem;
-			margin-bottom: 1.5rem;
-			text-align: center;
+			color: var(--fg);
+			font-size: 2.4rem;
+			margin: 0 0 0.3rem;
 		}
 
-		.terminal-line {
+		h1 .cursor {
+			display: inline-block;
+			color: var(--accent-green);
+			animation: blink 1s steps(1) infinite;
+		}
+
+		@keyframes blink {
+			50% { opacity: 0; }
+		}
+
+		.tagline {
+			color: var(--accent-blue);
+			font-size: 1.05rem;
+			margin: 0 0 2.2rem;
+		}
+
+		.about-text {
+			margin: 0 0 1rem;
+			line-height: 1.6;
+			color: var(--fg-secondary);
+		}
+
+		.about-text:last-child { margin-bottom: 0; }
+
+		.commands { margin-top: 0.5rem; }
+
+		.cmd-block { border-top: 1px solid var(--border); }
+		.cmd-block:last-child { border-bottom: 1px solid var(--border); }
+
+		.cmd-trigger {
 			display: flex;
-			align-items: flex-start;
-			justify-content: center;
-			max-width: 850px;
+			align-items: center;
+			width: 100%;
+			background: none;
+			border: none;
+			font-family: inherit;
+			font-size: 1.05rem;
+			color: var(--fg-secondary);
+			cursor: pointer;
+			padding: 0.65rem 0;
 			text-align: left;
-			padding: 0 1rem;
 		}
 
-		.prompt {
-			color: #a6e22e;
+		.cmd-trigger .shell-prompt {
+			color: var(--accent-green);
 			margin-right: 0.5rem;
-			flex-shrink: 0;
 		}
 
-		.text {
-			line-height: 1.7;
+		.cmd-trigger .cmd {
+			color: var(--accent-blue);
+			transition: color 0.15s ease-in-out;
+		}
+
+		.cmd-trigger:hover .cmd { color: var(--accent-green); }
+
+		.cmd-trigger .caret {
+			margin-left: auto;
+			color: var(--muted);
+			transition: transform 0.2s ease-in-out;
+		}
+
+		.cmd-trigger[aria-expanded="true"] .caret { transform: rotate(90deg); }
+
+		.cmd-output {
+			padding: 0.25rem 0 1.5rem 1.7rem;
+			margin-left: 0.3rem;
+			border-left: 1px dashed var(--border-soft);
+			font-size: 0.95rem;
+		}
+
+		.pub-item { margin-bottom: 1.1rem; }
+		.pub-item:last-child { margin-bottom: 0; }
+		.pub-title { color: var(--fg); margin: 0 0 0.2rem; }
+		.pub-meta { color: var(--accent-green); margin: 0 0 0.2rem; font-size: 0.88rem; }
+		.pub-item a { color: var(--accent-blue); font-size: 0.88rem; text-decoration: none; }
+		.pub-item a:hover { color: var(--accent-green); text-decoration: underline; }
+
+		.entry { margin-bottom: 1.3rem; }
+		.entry:last-child { margin-bottom: 0; }
+		.entry-header { display: flex; flex-wrap: wrap; justify-content: space-between; column-gap: 1rem; }
+		.entry-org { color: var(--accent-green); }
+		.entry-role { color: var(--fg); }
+		.entry-dates { color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
+
+		.statusbar {
+			display: flex;
+			align-items: center;
+			gap: 1.3rem;
+			padding: 0.9rem 2.25rem;
+			border-top: 1px solid var(--border);
+			background: var(--titlebar-bg);
+		}
+
+		.statusbar .shell-prompt { color: var(--accent-green); margin-right: 0.3rem; }
+
+		.statusbar a {
+			color: var(--accent-blue);
 			font-size: 1.15rem;
-			color: #d8dee9;
-		}
-
-		.social-icons {
-			margin-top: 2.5rem;
-		}
-
-		.social-icons a {
-			color: #66d9ef;
-			font-size: 2rem;
-			margin: 0 1.2rem;
 			text-decoration: none;
-			transition: color 0.2s ease-in-out;
+			transition: color 0.15s ease-in-out;
 		}
 
-		.social-icons a:hover {
-			color: #a6e22e;
-		}
+		.statusbar a:hover { color: var(--accent-green); }
 	</style>
 </head>
 <body>
 
-	<h1>Njogu Mbau</h1>
+	<div class="window">
+		<div class="titlebar">
+			<span class="dot red"></span>
+			<span class="dot amber"></span>
+			<span class="dot green"></span>
+			<span class="titlebar-label">njogu@portfolio: ~</span>
+		</div>
 
-	<div class="terminal-line">
-		<p class="text">
-		  <span class="prompt">&gt;_</span> Technology and Data Leader with over a decade of experience applying analytics, engineering, and economic reasoning to real-world challenges—particularly across the Global South—in development, governance, and policy.<br><br>
-		  
-		  <span class="prompt">&gt;_</span> I build data-informed systems and digital tools that help translate research into practical decision-making for governance and development.<br><br>
+		<div class="window-body">
+			<p class="shell-line"><span class="shell-prompt">$</span> whoami</p>
+			<h1>Njogu Mbau<span class="cursor">_</span></h1>
+			<p class="tagline">Technology and Data Leader</p>
 
-		  <span class="prompt">&gt;_</span> Education: B.Sc. in Computer Science from JKUAT; MBA from Strathmore Business School; MicroMasters in Data, Economics, and Design of Policy (DEDP) from MIT.<br><br>
+			<div class="commands">
 
-		  <span class="prompt">&gt;_</span> Based in Nairobi, Kenya. Avid golfer. Road-trip lover. Let’s connect!
-		</p>
+				<div class="cmd-block">
+					<button class="cmd-trigger" data-bs-toggle="collapse" data-bs-target="#about-panel" aria-expanded="false" aria-controls="about-panel">
+						<span class="shell-prompt">$</span> <span class="cmd">cat about.md</span> <span class="caret">▸</span>
+					</button>
+					<div class="collapse" id="about-panel">
+						<div class="cmd-output">
+							<p class="about-text">Technology and Data Leader with over a decade of experience applying analytics, engineering, and economic reasoning to real-world challenges—particularly across the Global South—in development, governance, and policy.</p>
+							<p class="about-text">I build data-informed systems and digital tools that help translate research into practical decision-making for governance and development.</p>
+							<p class="about-text">Based in Nairobi, Kenya. Avid golfer. Road-trip lover. Let’s connect!</p>
+						</div>
+					</div>
+				</div>
 
+				<div class="cmd-block">
+					<button class="cmd-trigger" data-bs-toggle="collapse" data-bs-target="#education-panel" aria-expanded="false" aria-controls="education-panel">
+						<span class="shell-prompt">$</span> <span class="cmd">cat education.log</span> <span class="caret">▸</span>
+					</button>
+					<div class="collapse" id="education-panel">
+						<div class="cmd-output">
+
+							<div class="entry">
+								<div class="entry-header">
+									<span><span class="entry-org">MITx Online</span> — <span class="entry-role">MicroMasters in Data, Economics, and Design of Policy (DEDP)</span></span>
+									<span class="entry-dates">2025 · Remote</span>
+								</div>
+							</div>
+
+							<div class="entry">
+								<div class="entry-header">
+									<span><span class="entry-org">Strathmore University</span> — <span class="entry-role">Master of Business Administration (MBA)</span></span>
+									<span class="entry-dates">2025 · Nairobi, Kenya</span>
+								</div>
+							</div>
+
+							<div class="entry">
+								<div class="entry-header">
+									<span><span class="entry-org">Jomo Kenyatta University of Agriculture and Technology</span> — <span class="entry-role">B.Sc. Computer Science</span></span>
+									<span class="entry-dates">2012 · Nairobi, Kenya</span>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+				<div class="cmd-block">
+					<button class="cmd-trigger" data-bs-toggle="collapse" data-bs-target="#experience-panel" aria-expanded="false" aria-controls="experience-panel">
+						<span class="shell-prompt">$</span> <span class="cmd">cat experience.log</span> <span class="caret">▸</span>
+					</button>
+					<div class="collapse" id="experience-panel">
+						<div class="cmd-output">
+
+							<div class="entry">
+								<div class="entry-header">
+									<span><span class="entry-org">World Bank Group</span> — <span class="entry-role">Consultant</span></span>
+									<span class="entry-dates">2026 – Present · Nairobi, Kenya</span>
+								</div>
+							</div>
+
+							<div class="entry">
+								<div class="entry-header">
+									<span><span class="entry-org">oTree Open-Source Research Foundation</span> — <span class="entry-role">Research Associate</span></span>
+									<span class="entry-dates">2024 – Present · Nairobi, Kenya / Remote</span>
+								</div>
+							</div>
+
+							<div class="entry">
+								<div class="entry-header">
+									<span><span class="entry-org">World Bank Group</span> — <span class="entry-role">Consultant</span></span>
+									<span class="entry-dates">2022 – 2024 · Washington, DC, USA</span>
+								</div>
+							</div>
+
+							<div class="entry">
+								<div class="entry-header">
+									<span><span class="entry-org">World Bank Group</span> — <span class="entry-role">Consultant</span></span>
+									<span class="entry-dates">2021 – 2022 · Nairobi, Kenya / Remote</span>
+								</div>
+							</div>
+
+							<div class="entry">
+								<div class="entry-header">
+									<span><span class="entry-org">Busara</span> — <span class="entry-role">Director of Data and Software</span></span>
+									<span class="entry-dates">2017 – 2020 · Nairobi, Kenya</span>
+								</div>
+							</div>
+
+							<div class="entry">
+								<div class="entry-header">
+									<span><span class="entry-org">Busara</span> — <span class="entry-role">Senior Manager, Software and Data Analytics</span></span>
+									<span class="entry-dates">2015 – 2017 · Nairobi, Kenya</span>
+								</div>
+							</div>
+
+							<div class="entry">
+								<div class="entry-header">
+									<span><span class="entry-org">Upwork</span> — <span class="entry-role">Freelance Software Engineer</span></span>
+									<span class="entry-dates">2011 – 2015 · Remote</span>
+								</div>
+							</div>
+
+							<div class="entry">
+								<div class="entry-header">
+									<span><span class="entry-org">Beyonic Technologies</span> — <span class="entry-role">Senior Software Engineer</span></span>
+									<span class="entry-dates">2013 – 2014 · Nairobi, Kenya</span>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+				<div class="cmd-block">
+					<button class="cmd-trigger" data-bs-toggle="collapse" data-bs-target="#pubs-panel" aria-expanded="false" aria-controls="pubs-panel">
+						<span class="shell-prompt">$</span> <span class="cmd">ls publications/</span> <span class="caret">▸</span>
+					</button>
+					<div class="collapse" id="pubs-panel">
+						<div class="cmd-output">
+
+							<div class="pub-item">
+								<p class="pub-title">What Precedent Reveals About Group Agency: Evidence from Discursive Dilemmas on the US Supreme Court</p>
+								<p class="pub-meta">B. Flanagan, N. Mbau, D. Chen, K. Silver · Available at SSRN 5544159 · 2026</p>
+							</div>
+
+							<div class="pub-item">
+								<p class="pub-title">oTree-QVSR: An Open-Source Application for Quadratic Voting Survey Research</p>
+								<p class="pub-meta">N. Mbau, D.L. Chen · 2025</p>
+							</div>
+
+							<div class="pub-item">
+								<p class="pub-title">Optimizing Judicial Efficiency: A Sharing Economy Approach to Reducing Court Backlogs</p>
+								<p class="pub-meta">D.L. Chen, Y.H. He, N. Mbau · 2025</p>
+							</div>
+
+							<div class="pub-item">
+								<p class="pub-title">Factors Influencing Customer Satisfaction with Online Food Delivery Platforms in Nairobi County</p>
+								<p class="pub-meta">B.N. Mbau · Strathmore University · 2025</p>
+							</div>
+
+							<div class="pub-item">
+								<p class="pub-title">Smart Smartphones for Mental Health</p>
+								<p class="pub-meta">A.R. Ani, A. Alvi, S. Saheel, T. Ahmed, D.L. Chen, Z. Wahhaj, N. Mbau · 2025</p>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="statusbar">
+			<span class="shell-line" style="margin:0;"><span class="shell-prompt">$</span> connect</span>
+			<a href="https://www.linkedin.com/in/njogumbau/" target="_blank" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+			<a href="mailto:bensonnjogu@gmail.com" title="Email"><i class="bi bi-envelope"></i></a>
+			<a href="https://github.com/njogumbau" target="_blank" title="GitHub"><i class="bi bi-github"></i></a>
+		</div>
 	</div>
 
-	<!-- Social Media Links with Icons -->
-	<div class="social-icons">
-		<a href="https://www.linkedin.com/in/njogumbau/" target="_blank" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
-		<a href="mailto:bensonnjogu@gmail.com" title="Email"><i class="bi bi-envelope"></i></a>
-		<a href="https://github.com/njogumbau" target="_blank" title="GitHub"><i class="bi bi-github"></i></a>
-	</div>
-
-	<!-- Bootstrap JS (optional) -->
-	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
