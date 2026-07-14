@@ -226,6 +226,12 @@
 		.entry-role { color: var(--fg); }
 		.entry-dates { color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
 
+		.toolbox-group { margin: 0 0 1rem; }
+		.toolbox-group:last-child { margin-bottom: 0; }
+		.toolbox-label { color: var(--accent-blue); font-size: 0.85rem; margin: 0 0 0.5rem; }
+		.tag-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+		.tag { display: inline-block; padding: 0.15rem 0.6rem; font-size: 0.85rem; color: var(--fg-secondary); border: 1px solid var(--border-soft); border-radius: 3px; }
+
 		.statusbar {
 			display: flex;
 			align-items: center;
@@ -411,6 +417,61 @@
 							<div class="pub-item">
 								<p class="pub-title">Smart Smartphones for Mental Health</p>
 								<p class="pub-meta">A.R. Ani, A. Alvi, S. Saheel, T. Ahmed, D.L. Chen, Z. Wahhaj, <strong>N. Mbau</strong> · 2025 <span class="pub-status review">Under Review</span></p>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+				<div class="cmd-block">
+					<button class="cmd-trigger" data-bs-toggle="collapse" data-bs-target="#toolbox-panel" aria-expanded="false" aria-controls="toolbox-panel">
+						<span class="shell-prompt">$</span> <span class="cmd">ls toolbox/</span> <span class="caret">▸</span>
+					</button>
+					<div class="collapse" id="toolbox-panel">
+						<div class="cmd-output">
+
+							<div class="toolbox-group">
+								<p class="toolbox-label">Languages</p>
+								<div class="tag-list">
+									<span class="tag">Python</span>
+									<span class="tag">R</span>
+									<span class="tag">Stata</span>
+									<span class="tag">SQL</span>
+									<span class="tag">JavaScript</span>
+								</div>
+							</div>
+
+							<div class="toolbox-group">
+								<p class="toolbox-label">Data & ML</p>
+								<div class="tag-list">
+									<span class="tag">Machine Learning</span>
+									<span class="tag">Data Visualization & Dashboards</span>
+									<span class="tag">Data Pipelines</span>
+									<span class="tag">Database Management</span>
+								</div>
+							</div>
+
+							<div class="toolbox-group">
+								<p class="toolbox-label">Research & Econometrics</p>
+								<div class="tag-list">
+									<span class="tag">Applied Statistics</span>
+									<span class="tag">Impact Evaluation</span>
+									<span class="tag">Experimental Design</span>
+									<span class="tag">Economic Modeling</span>
+									<span class="tag">oTree</span>
+								</div>
+							</div>
+
+							<div class="toolbox-group">
+								<p class="toolbox-label">Cloud & DevOps</p>
+								<div class="tag-list">
+									<span class="tag">AWS</span>
+									<span class="tag">Azure</span>
+									<span class="tag">CI/CD</span>
+									<span class="tag">Cloud Infrastructure</span>
+									<span class="tag">Git</span>
+									<span class="tag">Docker</span>
+								</div>
 							</div>
 
 						</div>
